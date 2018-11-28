@@ -187,11 +187,11 @@ func WebPageResolver(article *Article) (string, []string) {
 	topImage = bestCandidate.url
 	a, err := url.Parse(topImage)
 	if err != nil {
-		return topImage, []string{}
+		return topImage, allImages
 	}
 	finalURL, err := url.Parse(article.FinalURL)
 	if err != nil {
-		return topImage, []string{}
+		return topImage, allImages
 	}
 	b := finalURL.ResolveReference(a)
 	topImage = b.String()
