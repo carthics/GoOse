@@ -210,7 +210,7 @@ func findBestCandidateFromSurface(candidates []candidate) (candidate, []string) 
 
 		url := candidate.url
 
-		if len(url) > 0{
+		if len(strings.Trim(url, " ")) > 0{
 			if !strings.HasPrefix(url, "http"){
 				url = "http://" + url
 			}
@@ -314,7 +314,7 @@ func OpenGraphResolver(doc *goquery.Document) (string, []string) {
 
 				ogImages = append(ogImages, ogImage)
 
-				if len(value) > 0{
+				if len(strings.Trim(value, " ")) > 0{
 					if !strings.HasPrefix(value, "http"){
 						value = "http://" + value
 					}
