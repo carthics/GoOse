@@ -210,12 +210,14 @@ func findBestCandidateFromSurface(candidates []candidate) (candidate, []string) 
 
 		url := candidate.url
 
-		if !strings.HasPrefix(url, "http"){
-			url = "http://" + url
-		}
-		if mapOfImages[url] == false{
-			allImages = append(allImages, url)
-			mapOfImages[url] = true
+		if len(url) > 0{
+			if !strings.HasPrefix(url, "http"){
+				url = "http://" + url
+			}
+			if mapOfImages[url] == false{
+				allImages = append(allImages, url)
+				mapOfImages[url] = true
+			}	
 		}		
 	}
 
@@ -235,14 +237,15 @@ func findBestCandidateFromScore(candidates []candidate) (candidate, []string) {
 		}
 
 		url := candidate.url
-
-		if !strings.HasPrefix(url, "http"){
-			url = "http://" + url
-		}
-
-		if mapOfImages[url] == false{
-			allImages = append(allImages, url)
-			mapOfImages[url] = true
+		if len(url) > 0{
+			if !strings.HasPrefix(url, "http"){
+				url = "http://" + url
+			}
+	
+			if mapOfImages[url] == false{
+				allImages = append(allImages, url)
+				mapOfImages[url] = true
+			}
 		}
 	}
 
