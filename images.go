@@ -314,14 +314,16 @@ func OpenGraphResolver(doc *goquery.Document) (string, []string) {
 
 				ogImages = append(ogImages, ogImage)
 
-				if !strings.HasPrefix(value, "http"){
-					value = "http://" + value
-				}
-
-				if mapOfImages[value] == false{
-					allImages = append(allImages, value)
-					mapOfImages[value] = true
-				}
+				if len(value) > 0{
+					if !strings.HasPrefix(value, "http"){
+						value = "http://" + value
+					}
+	
+					if mapOfImages[value] == false{
+						allImages = append(allImages, value)
+						mapOfImages[value] = true
+					}
+				}	
 			}
 		}
 	})
