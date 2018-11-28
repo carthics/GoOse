@@ -203,13 +203,23 @@ func findBestCandidateFromSurface(candidates []candidate) (candidate, []string) 
 	max := 0
 	var bestCandidate candidate
 	allImages := make([]string, 0)
+	mapOfImages := map[string]bool{}
 	for _, candidate := range candidates {
 		surface := candidate.surface
 		if surface >= max {
 			max = surface
 			bestCandidate = candidate
 		}
-		allImages = append(allImages, candidate.url)
+
+		url := candidate.url
+
+		if !strings.HasPrefix(url, "http"){
+			url = "http://" + url
+		}
+		if mapOfImages[url] == false{
+			allImages = append(allImages, url)
+			mapOfImages[url] = true
+		}		
 	}
 
 	return bestCandidate, allImages
@@ -219,13 +229,24 @@ func findBestCandidateFromScore(candidates []candidate) (candidate, []string) {
 	max := 0
 	var bestCandidate candidate
 	allImages := make([]string, 0)
+	mapOfImages := map[string]bool{}
 	for _, candidate := range candidates {
 		score := candidate.score
 		if score >= max {
 			max = score
 			bestCandidate = candidate
 		}
-		allImages = append(allImages, candidate.url)
+
+		url := candidate.url
+
+		if !strings.HasPrefix(url, "http"){
+			url = "http://" + url
+		}
+
+		if mapOfImages[url] == false{
+			allImages = append(allImages, url)
+			mapOfImages[url] = true
+		}
 	}
 
 	return bestCandidate, allImages
@@ -279,6 +300,7 @@ func OpenGraphResolver(doc *goquery.Document) (string, []string) {
 	meta = meta.Union(links)
 	var ogImages []ogImage
 	allImages := make([]string, 0)
+	mapOfImages := map[string]bool{} 
 	meta.Each(func(i int, tag *goquery.Selection) {
 		for _, ogTag := range ogTags {
 			attr, exist := tag.Attr(ogTag.attribute)
@@ -291,7 +313,15 @@ func OpenGraphResolver(doc *goquery.Document) (string, []string) {
 				}
 
 				ogImages = append(ogImages, ogImage)
-				allImages = append(allImages, value)
+
+				if !strings.HasPrefix(value, "http"){
+					value = "http://" + value
+				}
+
+				if mapOfImages[value] == false{
+					allImages = append(allImages, value)
+					mapOfImages[value] = true
+				}
 			}
 		}
 	})
