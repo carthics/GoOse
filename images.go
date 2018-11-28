@@ -210,14 +210,12 @@ func findBestCandidateFromSurface(candidates []candidate) (candidate, []string) 
 
 		url := candidate.url
 
-		if len(strings.Trim(url, "  ")) > 0{
-			if !strings.HasPrefix(url, "http"){
-				url = "http://" + url
-			}
-			if mapOfImages[url] == false{
-				allImages = append(allImages, url)
-				mapOfImages[url] = true
-			}	
+		if !strings.HasPrefix(url, "http"){
+			url = "http://" + url
+		}
+		if mapOfImages[url] == false{
+			allImages = append(allImages, url)
+			mapOfImages[url] = true
 		}		
 	}
 
@@ -237,15 +235,14 @@ func findBestCandidateFromScore(candidates []candidate) (candidate, []string) {
 		}
 
 		url := candidate.url
-		if len(strings.Trim(url, "  ")) > 0{
-			if !strings.HasPrefix(url, "http"){
-				url = "http://" + url
-			}
-	
-			if mapOfImages[url] == false{
-				allImages = append(allImages, url)
-				mapOfImages[url] = true
-			}
+
+		if !strings.HasPrefix(url, "http"){
+			url = "http://" + url
+		}
+
+		if mapOfImages[url] == false{
+			allImages = append(allImages, url)
+			mapOfImages[url] = true
 		}
 	}
 
@@ -314,16 +311,14 @@ func OpenGraphResolver(doc *goquery.Document) (string, []string) {
 
 				ogImages = append(ogImages, ogImage)
 
-				if len(strings.Trim(value, "  ")) > 0{
-					if !strings.HasPrefix(value, "http"){
-						value = "http://" + value
-					}
-	
-					if mapOfImages[value] == false{
-						allImages = append(allImages, value)
-						mapOfImages[value] = true
-					}
-				}	
+				if !strings.HasPrefix(value, "http"){
+					value = "http://" + value
+				}
+
+				if mapOfImages[value] == false{
+					allImages = append(allImages, value)
+					mapOfImages[value] = true
+				}
 			}
 		}
 	})
