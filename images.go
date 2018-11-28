@@ -237,7 +237,7 @@ func findBestCandidateFromScore(candidates []candidate) (candidate, []string) {
 		}
 
 		url := candidate.url
-		if len(url) > 0{
+		if len(strings.Trim(url, " ")) > 0{
 			if !strings.HasPrefix(url, "http"){
 				url = "http://" + url
 			}
