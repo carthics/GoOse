@@ -149,16 +149,13 @@ func WebPageImageResolver(doc *goquery.Document) ([]candidate, int) {
 		if surface > significantSurface {
 			significantSurfaceCount++
 		}
-
-		tagscore := score(tag)
-		if tagscore >= 0 {
-			c := candidate{
-				url:     src,
-				surface: surface,
-				score:   score(tag),
-			}
-			candidates = append(candidates, c)
+		
+		c := candidate{
+			url:     src,
+			surface: surface,
+			score:   score(tag),
 		}
+		candidates = append(candidates, c)
 	})
 
 	if len(candidates) == 0 {
