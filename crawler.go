@@ -161,9 +161,9 @@ func (c Crawler) Crawl() (*Article, error) {
 	cleaner := NewCleaner(c.config)
 	article.Doc = cleaner.Clean(article.Doc)
 
-	article.TopImage = OpenGraphResolver(document)
+	article.TopImage, article.AllImages = OpenGraphResolver(document)
 	if article.TopImage == "" {
-		article.TopImage = WebPageResolver(article)
+		article.TopImage, article.AllImages = WebPageResolver(article)
 	}
 
 	article.TopNode = extractor.CalculateBestNode(document)

@@ -170,60 +170,65 @@ func WebPageImageResolver(doc *goquery.Document) ([]candidate, int) {
 }
 
 // WebPageResolver fetches the main image from the HTML page
-func WebPageResolver(article *Article) string {
+func WebPageResolver(article *Article) (string, []string) {
 	candidates, significantSurfaceCount := WebPageImageResolver(article.Doc)
 	if candidates == nil {
-		return ""
+		return "", []string{}
 	}
 	var bestCandidate candidate
 	var topImage string
+	allImages := make([]string, 0)
 	if significantSurfaceCount > 0 {
-		bestCandidate = findBestCandidateFromSurface(candidates)
+		bestCandidate, allImages = findBestCandidateFromSurface(candidates)
 	} else {
-		bestCandidate = findBestCandidateFromScore(candidates)
+		bestCandidate, allImages = findBestCandidateFromScore(candidates)
 	}
 
 	topImage = bestCandidate.url
 	a, err := url.Parse(topImage)
 	if err != nil {
-		return topImage
+		return topImage, []string{}
 	}
 	finalURL, err := url.Parse(article.FinalURL)
 	if err != nil {
-		return topImage
+		return topImage, []string{}
 	}
 	b := finalURL.ResolveReference(a)
 	topImage = b.String()
 
-	return topImage
+	return topImage, allImages
 }
 
-func findBestCandidateFromSurface(candidates []candidate) candidate {
+func findBestCandidateFromSurface(candidates []candidate) (candidate, []string) {
 	max := 0
 	var bestCandidate candidate
+	allImages := make([]string, 0)
 	for _, candidate := range candidates {
 		surface := candidate.surface
 		if surface >= max {
 			max = surface
 			bestCandidate = candidate
 		}
+		allImages = append(allImages, candidate.url)
 	}
 
-	return bestCandidate
+	return bestCandidate, allImages
 }
 
-func findBestCandidateFromScore(candidates []candidate) candidate {
+func findBestCandidateFromScore(candidates []candidate) (candidate, []string) {
 	max := 0
 	var bestCandidate candidate
+	allImages := make([]string, 0)
 	for _, candidate := range candidates {
 		score := candidate.score
 		if score >= max {
 			max = score
 			bestCandidate = candidate
 		}
+		allImages = append(allImages, candidate.url)
 	}
 
-	return bestCandidate
+	return bestCandidate, allImages
 }
 
 type ogTag struct {
@@ -267,12 +272,13 @@ type ogImage struct {
 }
 
 // OpenGraphResolver return OpenGraph properties
-func OpenGraphResolver(doc *goquery.Document) string {
+func OpenGraphResolver(doc *goquery.Document) (string, []string) {
 	meta := doc.Find("meta")
 	links := doc.Find("link")
 	var topImage string
 	meta = meta.Union(links)
 	var ogImages []ogImage
+	allImages := make([]string, 0)
 	meta.Each(func(i int, tag *goquery.Selection) {
 		for _, ogTag := range ogTags {
 			attr, exist := tag.Attr(ogTag.attribute)
@@ -285,11 +291,12 @@ func OpenGraphResolver(doc *goquery.Document) string {
 				}
 
 				ogImages = append(ogImages, ogImage)
+				allImages = append(allImages, value)
 			}
 		}
 	})
 	if len(ogImages) == 0 {
-		return ""
+		return "", []string{}
 	}
 	if len(ogImages) == 1 {
 		topImage = ogImages[0].url
@@ -309,7 +316,7 @@ IMAGE_FINALIZE:
 		topImage = "http://" + topImage
 	}
 
-	return topImage
+	return topImage, allImages
 }
 
 // assume that len(ogImages)>=2
