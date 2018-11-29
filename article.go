@@ -19,7 +19,7 @@ type Article struct {
 	Domain          string             `json:"domain,omitempty"`
 	TopNode         *goquery.Selection `json:"-"`
 	TopImage        string             `json:"image,omitempty"`
-	AllImages		[]string		   `json:"all_images,omitempty"`
+	AllImages		[][]string		   `json:"all_images,omitempty"`
 	Tags            *set.Set           `json:"tags,omitempty"`
 	Movies          *set.Set           `json:"movies,omitempty"`
 	FinalURL        string             `json:"url,omitempty"`
