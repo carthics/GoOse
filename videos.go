@@ -1,6 +1,7 @@
 package goose
 
 import (
+	"regexp"
 	"strconv"
 	"strings"
 	"github.com/PuerkitoBio/goquery"
@@ -67,8 +68,13 @@ func (ve *VideoExtractor) getSrc(node *goquery.Selection) string {
 
 func (ve *VideoExtractor) getProvider(src string) string {
 	if src != "" {
+		reg, err := regexp.Compile("[^a-zA-Z0-9]+")
+ 		if err != nil {
+ 			return ""
+ 		}
+ 		processedSrc := reg.ReplaceAllString(src, "")
 		for _, provider := range videoProviders {
-			if strings.Contains(src, provider) {
+			if strings.Contains(processedSrc, provider) {
 				return provider
 			}
 		}
