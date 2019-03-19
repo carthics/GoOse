@@ -162,8 +162,11 @@ func (c Crawler) Crawl() (*Article, error) {
 	article.Doc = cleaner.Clean(article.Doc)
 
 	article.TopImage, article.AllImages = OpenGraphResolver(document)
-	if article.TopImage == "" {
-		article.TopImage, article.AllImages = WebPageResolver(article)
+	topImage, allImages := WebPageResolver(article)
+	article.AllImages = min(article.AllImages, allImages)
+
+	if len(article.TopImage) == 0 {
+		article.TopImage = topImage
 	}
 
 	article.TopNode = extractor.CalculateBestNode(document)
@@ -179,6 +182,13 @@ func (c Crawler) Crawl() (*Article, error) {
 	article.Delta = time.Now().UnixNano() - startTime
 
 	return article, nil
+}
+
+func min(array1 [][]string, array2 [][]string) ([][]string){
+	if len(array2) > len(array1) {
+		return array2
+	}
+	return array1
 }
 
 // In many cases, like at the end of each <li> element or between </span><span> tags,
