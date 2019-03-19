@@ -163,7 +163,7 @@ func (c Crawler) Crawl() (*Article, error) {
 
 	article.TopImage, article.AllImages = OpenGraphResolver(document)
 	topImage, allImages := WebPageResolver(article)
-	article.AllImages = min(article.AllImages, allImages)
+	article.AllImages = max(article.AllImages, allImages)
 
 	if len(article.TopImage) == 0 {
 		article.TopImage = topImage
@@ -184,7 +184,7 @@ func (c Crawler) Crawl() (*Article, error) {
 	return article, nil
 }
 
-func min(array1 [][]string, array2 [][]string) ([][]string){
+func max(array1 [][]string, array2 [][]string) ([][]string){
 	if len(array2) > len(array1) {
 		return array2
 	}
